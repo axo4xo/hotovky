@@ -141,14 +141,6 @@ a { color: var(--ink); }
 /* ----- Domovská stránka: hero ----------------------------------------- */
 
 .hero { padding: clamp(2.4rem, 7vw, 5rem) 0 2rem; }
-.hero__eyebrow {
-  font-family: var(--mono);
-  text-transform: uppercase;
-  letter-spacing: .14em;
-  font-size: .72rem;
-  color: var(--ink-2);
-  margin: 0 0 1.1rem;
-}
 .hero__title {
   font-family: var(--display);
   font-weight: 800;
@@ -193,14 +185,23 @@ a { color: var(--ink); }
 /* ----- Karta = etiketa zboží na polici -------------------------------- */
 
 .card {
+  position: relative;             /* kotva pro roztažený odkaz */
   background: var(--card);
   border: 2px solid var(--ink);
   border-bottom-width: 5px;       /* hrana police */
   display: flex;
   flex-direction: column;
   transition: transform .15s ease;
+  cursor: pointer;
 }
 .card:hover { transform: translateY(-3px); }
+/* celá karta klikatelná: odkaz v nadpisu se roztáhne přes celou kartu */
+.card__title a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
 
 .card__media {
   position: relative;
@@ -333,6 +334,25 @@ a { color: var(--ink); }
   border-radius: 50%;
   background: var(--paper);
 }
+
+/* ----- Hodnota: cena přepočtená na energii (semafor) ------------------- */
+
+.value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: .5rem;
+  font-family: var(--mono);
+  font-size: .72rem;
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-left-width: 6px;
+  padding: .42rem .65rem;
+}
+.value__k { text-transform: uppercase; letter-spacing: .1em; color: var(--ink-2); }
+.value__v { color: var(--ink); font-weight: 500; }
+.value.score-hi  { border-left-color: var(--score-hi); }
+.value.score-mid { border-left-color: var(--score-mid); }
+.value.score-lo  { border-left-color: var(--score-lo); }
 
 /* ----- Datový proužek (obalový kód) ----------------------------------- */
 

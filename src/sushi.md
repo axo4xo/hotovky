@@ -1,12 +1,15 @@
 ---
-title: "Recenze: MQWI Sushi"
+title: "Recenze: MOWI Sushi"
 date: 2026-06-30
 rating: 5.5
 shop: "Albert?"
-brand: MQWI
-price: "XX Kč"
-price_per_100g: "XX Kč"
-weight: "XXX g"
+brand: "MOWI"
+price: "179 Kč (?)"
+price_czk: 179
+price_per_100g: "≈ 49 Kč"
+weight: "367,5 g"
+weight_g: 367.5
+kcal_100g: 162
 cuisine: Asijská / Japonská
 type: Chlazená
 image: /assets/img/sushi-hlavni.jpg
@@ -39,10 +42,6 @@ draft: false
 - **Obal:** Obal je průhledný, tedy sushi je vlastně vidět již bez otevření. Plus za transparentnost. Otevření je jenom otázka roztržení papírového přelepu.
 - **Vizuál po otevření (za studena):** Klasické sushi.
 
-![Vzhled jídla hned po rozbalení]({{ page.image }})
-
-*Popisek: Stav jídla těsně po vybalení z plastové krabičky.*
-
 ## 🍳 Příprava a náročnost
 
 *Otestování postupu doporučeného výrobcem.*
@@ -58,13 +57,13 @@ draft: false
 
 ### Nutriční hodnoty
 
-| Složka        | Na 100 g                     | Na porci ({{ page.weight }}) |
-| :------------ | :--------------------------- | :--------------------------- |
-| **Energie**   | XXX kJ / XXX kcal            | XXX kJ / XXX kcal            |
-| **Bílkoviny** | XX g                         | XX g                         |
-| **Sacharidy** | XX g (z toho cukry: XX g)    | XX g                         |
-| **Tuky**      | XX g (z toho nasycené: XX g) | XX g                         |
-| **Sůl**       | X,X g                        | X,X g                        |
+| Složka        | Na 100 g                       | Na porci ({{ page.weight }})    |
+| :------------ | :----------------------------- | :------------------------------ |
+| **Energie**   | 678 kJ / 162 kcal              | 2491 kJ / 595 kcal              |
+| **Bílkoviny** | 6,2 g                          | 22,8 g                          |
+| **Sacharidy** | 22,8 g (z toho cukry: 6,8 g)   | 83,8 g (z toho cukry: 25,0 g)   |
+| **Tuky**      | 4,8 g (z toho nasycené: 0,9 g) | 17,6 g (z toho nasycené: 3,3 g) |
+| **Sůl**       | 1,8 g                          | 6,6 g                           |
 
 ## 👅 Senzorické hodnocení (Chuťový profil)
 

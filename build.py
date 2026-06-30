@@ -40,8 +40,7 @@ SITE_TAGLINE = "Recenze hotových jídel a rychlých obědů"
 SITE_DESCRIPTION = "Hotová jídla z českých regálů — oloupnutá, ochutnaná a obodovaná na stupnici do deseti."
 
 # Texty domovské stránky
-HERO_EYEBROW = "Spotřebitelský posudek · chlazená · mražená · rychlý oběd"
-HERO_TITLE_HTML = "Vanička<br>u výslechu"
+HERO_TITLE_HTML = "Hotovky"
 HERO_LEDE = ("Hotová jídla z českých regálů — oloupnutá, ochutnaná a obodovaná "
              "na stupnici do deseti. Žádné filtry, jen vanička a verdikt.")
 
@@ -318,6 +317,50 @@ def price_tag(meta: dict) -> str:
     )
 
 
+def _num(value):
+    """Vytáhne první číslo z hodnoty (podporuje desetinnou čárku)."""
+    if value is None:
+        return None
+    if isinstance(value, (int, float)):
+        return float(value)
+    m = re.search(r"-?\d+(?:[.,]\d+)?", str(value))
+    return float(m.group(0).replace(",", ".")) if m else None
+
+
+def value_info(meta: dict):
+    """Poměr cena / energie -> Kč za 100 kcal + verdikt hodnoty."""
+    price = _num(meta.get("price_czk", meta.get("price")))
+    weight = _num(meta.get("weight_g", meta.get("weight")))
+    kcal100 = _num(meta.get("kcal_100g"))
+    if not (price and weight and kcal100):
+        return None
+    total_kcal = kcal100 * weight / 100.0
+    if total_kcal <= 0:
+        return None
+    per_100kcal = price / total_kcal * 100.0
+    if per_100kcal <= 12:
+        cls, word = "score-hi", "Výhodné"
+    elif per_100kcal <= 22:
+        cls, word = "score-mid", "Fér"
+    else:
+        cls, word = "score-lo", "Předražené"
+    return {"per_100kcal": per_100kcal, "cls": cls, "word": word}
+
+
+def value_chip(meta: dict) -> str:
+    """Štítek 'Hodnota' = cena přepočtená na energetickou hodnotu."""
+    info = value_info(meta)
+    if not info:
+        return ""
+    return (
+        f'<span class="value {info["cls"]}" '
+        f'title="Cena přepočtená na energetickou hodnotu">'
+        f'<span class="value__k">Hodnota</span>'
+        f'<span class="value__v">≈ {info["per_100kcal"]:.0f} Kč / 100 kcal'
+        f' · {html.escape(info["word"])}</span></span>'
+    )
+
+
 def data_strip(fields, *, extra_class: str = "") -> str:
     """Řádek dat ve stylu obalového kódu (mono)."""
     items = "".join(
@@ -381,6 +424,7 @@ def render_post(post: dict, md: markdown.Markdown) -> str:
     <div class="verdict">
       {rating_stamp(meta.get("rating"), big=True)}
       {price_tag(meta)}
+      {value_chip(meta)}
     </div>
     {strip}
   </header>
@@ -407,9 +451,9 @@ def render_card(post: dict) -> str:
     href = f'{post["slug"]}.html'
     title = str(meta.get("title", ""))
     media = (
-        f'<a class="card__media" href="{href}" tabindex="-1" aria-hidden="true">'
+        f'<div class="card__media">'
         f'<img src="{html.escape(image)}" alt="" loading="lazy">'
-        f"{price_tag(meta)}</a>"
+        f"{price_tag(meta)}</div>"
         if image else ""
     )
     summary = meta.get("summary", "")
@@ -452,7 +496,6 @@ def render_index(posts: list[dict]) -> str:
         grid = '<p class="empty">Regál je zatím prázdný — nic jsme neoloupli.</p>'
     body = f"""
 <section class="hero">
-  <p class="hero__eyebrow">{html.escape(HERO_EYEBROW)}</p>
   <h1 class="hero__title">{HERO_TITLE_HTML}</h1>
   <p class="hero__lede">{html.escape(HERO_LEDE)}</p>
 </section>
