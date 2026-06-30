@@ -51,10 +51,6 @@ draft: false
 
 ## 🔬 Složení a nutriční hodnoty
 
-### Složení
-
-> *Zde zkopíruj nebo shrň podstatné složky z etikety. Zaměř se na podíl hlavní složky (např. % ryby), přítomnost zbytečných éček, separátů nebo palmového oleje.*
-
 ### Nutriční hodnoty
 
 | Složka        | Na 100 g                       | Na porci ({{ page.weight }})    |
