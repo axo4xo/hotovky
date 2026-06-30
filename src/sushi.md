@@ -15,7 +15,6 @@ tags:
   - rychly-obed
   - kuchyne
   - obchod
-  - a
 draft: false
 ---
 # [Recenze: MQWI Sushi]
