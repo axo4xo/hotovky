@@ -33,31 +33,33 @@ python3 -m venv .venv
 ```
 
 Vygenerovaný web je čistě statický (HTML + CSS), takže ho lze nahrát kamkoli —
-GitHub Pages, Netlify, Cloudflare Pages, vlastní hosting…
+Vercel, GitHub Pages, Netlify, Cloudflare Pages, vlastní hosting…
 
-## Nasazení (GitHub Pages)
+## Nasazení (Vercel — výchozí)
 
-Repozitář obsahuje workflow `.github/workflows/deploy.yml`, který při každém
-pushi do větve `main` web sestaví a nasadí na GitHub Pages.
+Repozitář obsahuje `vercel.json`, takže Vercel ví, jak web sestavit:
 
-**Jednorázové nastavení** (stačí jednou, v prohlížeči):
-
-1. Otevři **Settings → Pages** v repozitáři na GitHubu.
-2. U položky **Source** vyber **GitHub Actions**.
-
-Hotovo. Od té chvíle se po každém pushi do `main` web automaticky publikuje na:
-
-```
-https://axo4xo.github.io/hotovky/
+```json
+{ "installCommand": "pip install -r requirements.txt",
+  "buildCommand": "python3 build.py",
+  "outputDirectory": "dist" }
 ```
 
-Workflow lze spustit i ručně přes záložku **Actions → Build & deploy to
-GitHub Pages → Run workflow**. Protože web používá relativní cesty, funguje
-správně i v podadresáři `/hotovky/`.
+**Jednorázové nastavení** (v prohlížeči, na vercel.com):
 
-> **Vercel jako alternativa:** stačí naimportovat repozitář ve Vercelu a nastavit
-> *Build Command* na `pip install -r requirements.txt && python build.py` a
-> *Output Directory* na `dist`. Řekni a doplním `vercel.json`.
+1. **Add New… → Project** a naimportuj repozitář `axo4xo/hotovky`.
+2. Framework Preset nech na **Other** (vše ostatní si Vercel přečte z `vercel.json`).
+3. **Deploy**.
+
+Od té chvíle Vercel po každém pushi do `main` web sám sestaví a nasadí.
+Protože web používá relativní cesty, funguje z kořene domény i z podadresáře.
+
+## Nasazení (GitHub Pages — ruční záloha)
+
+Workflow `.github/workflows/deploy.yml` umí web nasadit i na GitHub Pages, ale
+automatické spouštění je vypnuté (běhalo pomalu a zasekávalo se ve frontě).
+Spustit se dá ručně přes **Actions → Build & deploy to GitHub Pages → Run
+workflow** (vyžaduje **Settings → Pages → Source: GitHub Actions**).
 
 ## Jak napsat recenzi
 

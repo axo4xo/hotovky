@@ -1,8 +1,8 @@
 name: Build & deploy to GitHub Pages
 
+# Automatické nasazení na Pages je vypnuté — web hostuje Vercel (vercel.json).
+# Tento workflow zůstává jen jako ruční záloha: Actions → tento workflow → Run workflow.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 # Oprávnění potřebná pro nasazení na GitHub Pages
