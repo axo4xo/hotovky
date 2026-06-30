@@ -88,13 +88,10 @@ a { color: var(--ink); }
 .barcode {
   height: 30px;
   width: 100%;
-  background-image: repeating-linear-gradient(
-    90deg,
-    var(--ink) 0 2px, transparent 2px 5px,
-    var(--ink) 5px 6px, transparent 6px 9px,
-    var(--ink) 9px 12px, transparent 12px 14px,
-    var(--ink) 14px 15px, transparent 15px 19px
-  );
+  /* nepravidelné šířky čar (procentní stopy škálují s šířkou prvku),
+     generováno deterministicky v build skriptu — žádné opakování */
+  background-image: linear-gradient(90deg, transparent 0.0% 1.6%, var(--ink) 1.6% 2.5%, transparent 2.5% 2.95%, var(--ink) 2.95% 3.85%, transparent 3.85% 4.3%, var(--ink) 4.3% 4.75%, transparent 4.75% 6.1%, var(--ink) 6.1% 6.55%, transparent 6.55% 7.0%, var(--ink) 7.0% 7.9%, transparent 7.9% 8.35%, var(--ink) 8.35% 9.25%, transparent 9.25% 9.7%, var(--ink) 9.7% 10.15%, transparent 10.15% 10.6%, var(--ink) 10.6% 11.5%, transparent 11.5% 12.4%, var(--ink) 12.4% 12.85%, transparent 12.85% 13.3%, var(--ink) 13.3% 13.75%, transparent 13.75% 15.1%, var(--ink) 15.1% 16.0%, transparent 16.0% 16.45%, var(--ink) 16.45% 18.25%, transparent 18.25% 19.6%, var(--ink) 19.6% 20.05%, transparent 20.05% 20.5%, var(--ink) 20.5% 21.85%, transparent 21.85% 23.2%, var(--ink) 23.2% 23.65%, transparent 23.65% 25.0%, var(--ink) 25.0% 25.9%, transparent 25.9% 26.8%, var(--ink) 26.8% 27.25%, transparent 27.25% 27.7%, var(--ink) 27.7% 28.15%, transparent 28.15% 29.5%, var(--ink) 29.5% 31.3%, transparent 31.3% 31.75%, var(--ink) 31.75% 32.65%, transparent 32.65% 33.55%, var(--ink) 33.55% 34.0%, transparent 34.0% 35.35%, var(--ink) 35.35% 35.8%, transparent 35.8% 37.15%, var(--ink) 37.15% 38.05%, transparent 38.05% 39.4%, var(--ink) 39.4% 41.2%, transparent 41.2% 41.65%, var(--ink) 41.65% 42.1%, transparent 42.1% 43.45%, var(--ink) 43.45% 44.35%, transparent 44.35% 44.8%, var(--ink) 44.8% 45.7%, transparent 45.7% 46.15%, var(--ink) 46.15% 47.05%, transparent 47.05% 47.5%, var(--ink) 47.5% 48.4%, transparent 48.4% 48.85%, var(--ink) 48.85% 49.75%, transparent 49.75% 50.2%, var(--ink) 50.2% 51.1%, transparent 51.1% 52.45%, var(--ink) 52.45% 53.35%, transparent 53.35% 53.8%, var(--ink) 53.8% 54.7%, transparent 54.7% 56.05%, var(--ink) 56.05% 56.95%, transparent 56.95% 57.4%, var(--ink) 57.4% 58.3%, transparent 58.3% 58.75%, var(--ink) 58.75% 60.55%, transparent 60.55% 61.0%, var(--ink) 61.0% 62.35%, transparent 62.35% 62.8%, var(--ink) 62.8% 63.25%, transparent 63.25% 64.6%, var(--ink) 64.6% 65.5%, transparent 65.5% 66.85%, var(--ink) 66.85% 67.75%, transparent 67.75% 68.2%, var(--ink) 68.2% 69.55%, transparent 69.55% 70.45%, var(--ink) 70.45% 71.35%, transparent 71.35% 72.7%, var(--ink) 72.7% 73.15%, transparent 73.15% 73.6%, var(--ink) 73.6% 74.5%, transparent 74.5% 75.4%, var(--ink) 75.4% 75.85%, transparent 75.85% 76.3%, var(--ink) 76.3% 76.75%, transparent 76.75% 77.65%, var(--ink) 77.65% 78.55%, transparent 78.55% 79.0%, var(--ink) 79.0% 80.35%, transparent 80.35% 80.8%, var(--ink) 80.8% 82.6%, transparent 82.6% 83.95%, var(--ink) 83.95% 84.85%, transparent 84.85% 85.3%, var(--ink) 85.3% 86.2%, transparent 86.2% 86.65%, var(--ink) 86.65% 87.55%, transparent 87.55% 88.45%, var(--ink) 88.45% 89.35%, transparent 89.35% 90.25%, var(--ink) 90.25% 90.7%, transparent 90.7% 91.15%, var(--ink) 91.15% 92.05%, transparent 92.05% 92.95%, var(--ink) 92.95% 94.3%, transparent 94.3% 94.75%, var(--ink) 94.75% 95.2%, transparent 95.2% 95.65%, var(--ink) 95.65% 97.0%, transparent 97.0% 98.35%, var(--ink) 98.35% 98.4%, transparent 98.4% 100%);
+  background-repeat: no-repeat;
   opacity: .85;
 }
 
