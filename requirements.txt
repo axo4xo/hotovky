@@ -1,0 +1,4 @@
+Markdown>=3.6
+pymdown-extensions>=10.0
+PyYAML>=6.0
+Pygments>=2.17
