@@ -35,8 +35,15 @@ ASSETS_DIR = ROOT / "assets"
 OUT_DIR = ROOT / "dist"
 
 SITE_TITLE = "Hotovky"
+SITE_KICKER = "Posudky hotových jídel"
 SITE_TAGLINE = "Recenze hotových jídel a rychlých obědů"
-SITE_DESCRIPTION = "Poctivé recenze chlazených, mražených a hotových jídel z českých obchodů."
+SITE_DESCRIPTION = "Hotová jídla z českých regálů — oloupnutá, ochutnaná a obodovaná na stupnici do deseti."
+
+# Texty domovské stránky
+HERO_EYEBROW = "Spotřebitelský posudek · chlazená · mražená · rychlý oběd"
+HERO_TITLE_HTML = "Vanička<br>u výslechu"
+HERO_LEDE = ("Hotová jídla z českých regálů — oloupnutá, ochutnaná a obodovaná "
+             "na stupnici do deseti. Žádné filtry, jen vanička a verdikt.")
 
 MONTHS_CS = [
     "", "ledna", "února", "března", "dubna", "května", "června",
@@ -129,17 +136,41 @@ def fmt_date_iso(value) -> str:
 
 
 def rating_class(rating) -> str:
+    """Stupnice -> třída semaforu (zelená / oranžová / červená)."""
     try:
         r = float(rating)
     except (TypeError, ValueError):
-        return "rating-na"
-    if r >= 8:
-        return "rating-great"
-    if r >= 6:
-        return "rating-good"
+        return "score-na"
+    if r >= 6.5:
+        return "score-hi"
     if r >= 4:
-        return "rating-ok"
-    return "rating-bad"
+        return "score-mid"
+    return "score-lo"
+
+
+def score_word(rating) -> str:
+    """Deklamovaný verdikt jedním slovem."""
+    try:
+        r = float(rating)
+    except (TypeError, ValueError):
+        return "—"
+    if r >= 8:
+        return "Výborné"
+    if r >= 6.5:
+        return "Solidní"
+    if r >= 5:
+        return "Ujde"
+    if r >= 3.5:
+        return "Slabé"
+    return "Mimo"
+
+
+def plural_polozka(n: int) -> str:
+    if n == 1:
+        return "položka"
+    if 2 <= n <= 4:
+        return "položky"
+    return "položek"
 
 
 def webpath(p: str) -> str:
@@ -208,6 +239,14 @@ def render_markdown(text: str, md: markdown.Markdown) -> str:
 # HTML šablony
 # --------------------------------------------------------------------------- #
 
+FONTS_HREF = (
+    "https://fonts.googleapis.com/css2?"
+    "family=IBM+Plex+Mono:wght@400;500;600&"
+    "family=IBM+Plex+Sans:wght@400;500;600;700&"
+    "family=Saira+Condensed:wght@500;600;700;800&display=swap"
+)
+
+
 def page_shell(title: str, body: str, *, description: str = "", is_home: bool = False) -> str:
     desc = html.escape(description or SITE_DESCRIPTION)
     home_class = " is-home" if is_home else ""
@@ -219,27 +258,27 @@ def page_shell(title: str, body: str, *, description: str = "", is_home: bool = 
 <meta name="description" content="{desc}">
 <title>{html.escape(title)}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="{FONTS_HREF}">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body class="page{home_class}">
+<a class="skip-link" href="#obsah">Přeskočit na obsah</a>
 <header class="site-header">
   <div class="container site-header__inner">
-    <a class="brand" href="index.html">
-      <span class="brand__mark" aria-hidden="true">🍱</span>
-      <span class="brand__text">
-        <span class="brand__title">{html.escape(SITE_TITLE)}</span>
-        <span class="brand__tagline">{html.escape(SITE_TAGLINE)}</span>
-      </span>
-    </a>
+    <a class="brand" href="index.html">{html.escape(SITE_TITLE)}</a>
+    <span class="site-header__tag">{html.escape(SITE_KICKER)}</span>
   </div>
+  <div class="barcode site-header__rule" aria-hidden="true"></div>
 </header>
-<main class="container">
+<main class="container" id="obsah">
 {body}
 </main>
 <footer class="site-footer">
-  <div class="container">
-    <p>{html.escape(SITE_TITLE)} — {html.escape(SITE_TAGLINE)}.</p>
-    <p class="muted">Generováno staticky pomocí <code>build.py</code>.</p>
+  <div class="container site-footer__inner">
+    <div class="barcode" aria-hidden="true"></div>
+    <p class="site-footer__line">{html.escape(SITE_TITLE)} — Spotřebujte dle uvážení</p>
+    <p class="site-footer__meta">Sestaveno staticky pomocí <code>build.py</code>.</p>
   </div>
 </footer>
 </body>
@@ -247,45 +286,57 @@ def page_shell(title: str, body: str, *, description: str = "", is_home: bool = 
 """
 
 
-def rating_badge(rating, *, big: bool = False) -> str:
+def rating_stamp(rating, *, big: bool = False) -> str:
+    """Hodnocení jako úředně odstupňovaný štítek (semafor + verdikt)."""
     if rating is None:
         return ""
     cls = rating_class(rating)
-    size = " rating--big" if big else ""
+    size = " stamp--big" if big else ""
     try:
         val = f"{float(rating):g}"
     except (TypeError, ValueError):
         val = html.escape(str(rating))
+    word = score_word(rating)
     return (
-        f'<span class="rating {cls}{size}">'
-        f'<span class="rating__value">{val}</span>'
-        f'<span class="rating__max">/&#8202;10</span></span>'
+        f'<span class="stamp {cls}{size}" role="img" '
+        f'aria-label="Hodnocení {val} z 10 — {word}">'
+        f'<span class="stamp__num">{val}</span>'
+        f'<span class="stamp__meta">'
+        f'<span class="stamp__max">/ 10</span>'
+        f'<span class="stamp__grade">{html.escape(word)}</span>'
+        f'</span></span>'
     )
+
+
+def price_tag(meta: dict) -> str:
+    price = meta.get("price")
+    if not price:
+        return ""
+    return (
+        f'<span class="pricetag"><span class="pricetag__v">'
+        f'{html.escape(str(price))}</span></span>'
+    )
+
+
+def data_strip(fields, *, extra_class: str = "") -> str:
+    """Řádek dat ve stylu obalového kódu (mono)."""
+    items = "".join(
+        f'<span class="data__item"><span class="data__k">{html.escape(label)}</span>'
+        f'<span class="data__v">{html.escape(str(value))}</span></span>'
+        for label, value in fields
+        if value
+    )
+    if not items:
+        return ""
+    cls = ("datastrip " + extra_class).strip()
+    return f'<div class="{cls}">{items}</div>'
 
 
 def tags_html(tags) -> str:
     if not tags:
         return ""
-    chips = "".join(f'<li class="tag">#{html.escape(str(t))}</li>' for t in tags)
+    chips = "".join(f'<li class="tag">{html.escape(str(t))}</li>' for t in tags)
     return f'<ul class="tags">{chips}</ul>'
-
-
-def meta_chips(meta: dict) -> str:
-    rows = [
-        ("Datum", fmt_date(meta.get("date"))),
-        ("Kuchyně", meta.get("cuisine")),
-        ("Typ", meta.get("type")),
-        ("Obchod", meta.get("shop")),
-        ("Cena", meta.get("price")),
-        ("Hmotnost", meta.get("weight")),
-    ]
-    chips = "".join(
-        f'<div class="metabar__item"><dt>{html.escape(label)}</dt>'
-        f"<dd>{html.escape(str(value))}</dd></div>"
-        for label, value in rows
-        if value
-    )
-    return f'<dl class="metabar">{chips}</dl>' if chips else ""
 
 
 def render_post(post: dict, md: markdown.Markdown) -> str:
@@ -293,39 +344,58 @@ def render_post(post: dict, md: markdown.Markdown) -> str:
     body = substitute_vars(post["body"], meta)
     content = render_markdown(body, md)
     image = webpath(meta.get("image", ""))
+    title = str(meta.get("title", ""))
+
+    eyebrow = " · ".join(str(b) for b in (meta.get("type"), meta.get("cuisine")) if b)
+    eyebrow_html = f'<p class="eyebrow">{html.escape(eyebrow)}</p>' if eyebrow else ""
+
+    summary = meta.get("summary", "")
+    lede = f'<p class="post-lede">{html.escape(str(summary))}</p>' if summary else ""
 
     hero = ""
     if image:
         hero = (
-            f'<figure class="post-hero">'
-            f'<img src="{html.escape(image)}" alt="{html.escape(str(meta.get("title", "")))}" loading="eager">'
+            f'<figure class="tray">'
+            f'<img class="tray__img" src="{html.escape(image)}" alt="{html.escape(title)}" loading="eager">'
+            f'<span class="tray__seal" aria-hidden="true">Zde otevřít</span>'
             f"</figure>"
         )
 
-    summary = meta.get("summary", "")
-    summary_html = f'<p class="post-summary">{html.escape(str(summary))}</p>' if summary else ""
+    strip = data_strip(
+        [
+            ("DATUM", fmt_date(meta.get("date"))),
+            ("OBCHOD", meta.get("shop")),
+            ("ZNAČKA", meta.get("brand")),
+            ("HMOTNOST", meta.get("weight")),
+        ],
+        extra_class="post-data",
+    )
 
     article = f"""
 <article class="post">
-  <a class="back-link" href="index.html">← Zpět na přehled</a>
-  <header class="post-header">
-    {rating_badge(meta.get("rating"), big=True)}
-    <h1 class="post-title">{html.escape(str(meta.get("title", "")))}</h1>
-    {summary_html}
-    {meta_chips(meta)}
+  <a class="back-link" href="index.html">← Zpět do regálu</a>
+  <header class="post-head">
+    {eyebrow_html}
+    <h1 class="post-title">{html.escape(title)}</h1>
+    {lede}
+    <div class="verdict">
+      {rating_stamp(meta.get("rating"), big=True)}
+      {price_tag(meta)}
+    </div>
+    {strip}
   </header>
   {hero}
   <div class="post-body">
 {content}
   </div>
-  <footer class="post-footer">
+  <footer class="post-foot">
     {tags_html(meta.get("tags"))}
-    <a class="back-link" href="index.html">← Zpět na přehled</a>
+    <a class="back-link" href="index.html">← Zpět do regálu</a>
   </footer>
 </article>
 """
     return page_shell(
-        f'{meta.get("title", post["slug"])} — {SITE_TITLE}',
+        f'{title or post["slug"]} — {SITE_TITLE}',
         article,
         description=str(summary or SITE_DESCRIPTION),
     )
@@ -335,22 +405,33 @@ def render_card(post: dict) -> str:
     meta = post["meta"]
     image = webpath(meta.get("image", ""))
     href = f'{post["slug"]}.html'
-    thumb = (
-        f'<a class="card__media" href="{href}">'
-        f'<img src="{html.escape(image)}" alt="" loading="lazy"></a>'
+    title = str(meta.get("title", ""))
+    media = (
+        f'<a class="card__media" href="{href}" tabindex="-1" aria-hidden="true">'
+        f'<img src="{html.escape(image)}" alt="" loading="lazy">'
+        f"{price_tag(meta)}</a>"
         if image else ""
     )
     summary = meta.get("summary", "")
+    strip = data_strip(
+        [
+            ("HMOTNOST", meta.get("weight")),
+            ("OBCHOD", meta.get("shop")),
+            ("TYP", meta.get("type")),
+        ],
+        extra_class="card__data",
+    )
     return f"""
 <article class="card">
-  {thumb}
+  {media}
   <div class="card__body">
-    <div class="card__top">
-      {rating_badge(meta.get("rating"))}
+    <div class="card__row">
+      {rating_stamp(meta.get("rating"))}
       <time class="card__date" datetime="{fmt_date_iso(meta.get("date"))}">{fmt_date(meta.get("date"))}</time>
     </div>
-    <h2 class="card__title"><a href="{href}">{html.escape(str(meta.get("title", "")))}</a></h2>
+    <h2 class="card__title"><a href="{href}">{html.escape(title)}</a></h2>
     <p class="card__summary">{html.escape(str(summary))}</p>
+    {strip}
     {tags_html(meta.get("tags"))}
   </div>
 </article>
@@ -358,19 +439,26 @@ def render_card(post: dict) -> str:
 
 
 def render_index(posts: list[dict]) -> str:
+    n = len(posts)
     if posts:
         cards = "\n".join(render_card(p) for p in posts)
-        grid = f'<div class="card-grid">{cards}</div>'
+        grid = f"""
+<div class="shelf-head">
+  <span class="shelf-head__label">Regál</span>
+  <span class="shelf-head__count">{n} {plural_polozka(n)}</span>
+</div>
+<div class="card-grid">{cards}</div>"""
     else:
-        grid = '<p class="empty">Zatím tu nejsou žádné recenze.</p>'
+        grid = '<p class="empty">Regál je zatím prázdný — nic jsme neoloupli.</p>'
     body = f"""
 <section class="hero">
-  <h1 class="hero__title">{html.escape(SITE_TAGLINE)}</h1>
-  <p class="hero__lead">{html.escape(SITE_DESCRIPTION)}</p>
+  <p class="hero__eyebrow">{html.escape(HERO_EYEBROW)}</p>
+  <h1 class="hero__title">{HERO_TITLE_HTML}</h1>
+  <p class="hero__lede">{html.escape(HERO_LEDE)}</p>
 </section>
 {grid}
 """
-    return page_shell(f"{SITE_TITLE} — {SITE_TAGLINE}", body, is_home=True)
+    return page_shell(f"{SITE_TITLE} — {SITE_KICKER}", body, is_home=True)
 
 
 # --------------------------------------------------------------------------- #

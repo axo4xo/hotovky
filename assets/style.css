@@ -1,48 +1,47 @@
-/* ========================================================================
-   Hotovky — blogový styl
-   ===================================================================== */
+/* ==========================================================================
+   HOTOVKY — "Spotřebitelský posudek"
+   Hotová jídla z regálu, oblečená do jazyka obalu a inspekční zprávy.
+   Display: Saira Condensed · Text: IBM Plex Sans · Data: IBM Plex Mono
+   ========================================================================== */
 
 :root {
-  --bg: #f6f5f2;
-  --surface: #ffffff;
-  --surface-2: #faf9f6;
-  --ink: #1d1c1a;
-  --ink-soft: #54514c;
-  --muted: #8a857d;
-  --line: #e7e3db;
-  --accent: #d6453a;
-  --accent-soft: #fcecea;
-  --shadow: 0 1px 2px rgba(0,0,0,.05), 0 12px 28px -18px rgba(0,0,0,.35);
-  --radius: 16px;
-  --radius-sm: 10px;
-  --maxw: 64rem;
-  --readw: 44rem;
+  /* materiály: studený lisovaný karton, plastová vanička, termotisk */
+  --paper:   #e7eae5;   /* pozadí stránky — studená recyklovaná lepenka */
+  --shelf:   #dce0da;   /* police / vsazené plochy */
+  --tray:    #c6d0cb;   /* modrošedý plast vaničky */
+  --card:    #f6f8f2;   /* etiketový bílý papír */
+  --ink:     #161a18;   /* termotisk, studená čerň */
+  --ink-2:   #5c625e;   /* sekundární tisk */
+  --line:    #c2c8c0;   /* vlasová linka */
 
-  --great: #1f9d57;
-  --good: #4f9b2e;
-  --ok: #d99311;
-  --bad: #d6453a;
+  --tag:     #ffd21e;   /* žlutá cenovka — jediný hlasitý akcent */
+  --tag-ink: #171307;
 
-  --pro: #1f9d57;
-  --pro-bg: #ecf7f0;
-  --con: #d6453a;
-  --con-bg: #fdecea;
+  /* semafor výživové etikety = stupnice hodnocení */
+  --score-hi:  #2e8b4e;
+  --score-mid: #e0a12b;
+  --score-lo:  #d23a2c;
+
+  --display: "Saira Condensed", "Arial Narrow", system-ui, sans-serif;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --measure: 44rem;
+  --maxw: 66rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #14130f;
-    --surface: #1d1b17;
-    --surface-2: #232019;
-    --ink: #f3efe7;
-    --ink-soft: #c8c2b6;
-    --muted: #948d7f;
-    --line: #322e26;
-    --accent: #f06a5e;
-    --accent-soft: #2c1c19;
-    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 18px 36px -22px rgba(0,0,0,.9);
-    --pro-bg: #15241b;
-    --con-bg: #2a1714;
+    --paper:   #15171a;
+    --shelf:   #1c1f22;
+    --tray:    #23282b;
+    --card:    #1e2225;
+    --ink:     #eceae3;
+    --ink-2:   #9aa09b;
+    --line:    #343a37;
+    --score-hi:  #46b96a;
+    --score-mid: #ebb03f;
+    --score-lo:  #e7574a;
   }
 }
 
@@ -52,12 +51,11 @@ html { -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
-  background: var(--bg);
+  background: var(--paper);
   color: var(--ink);
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  font-family: var(--sans);
   font-size: 17px;
-  line-height: 1.65;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -66,231 +64,589 @@ body {
   width: 100%;
   max-width: var(--maxw);
   margin-inline: auto;
-  padding-inline: clamp(1rem, 4vw, 2rem);
+  padding-inline: clamp(1rem, 4vw, 2.2rem);
 }
 
-a { color: var(--accent); text-decoration: none; }
-a:hover { text-decoration: underline; }
 img { max-width: 100%; height: auto; display: block; }
-.muted { color: var(--muted); }
 
-/* ----- Hlavička webu ------------------------------------------------- */
+a { color: var(--ink); }
+
+:focus-visible { outline: 3px solid var(--score-mid); outline-offset: 2px; }
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+}
+.skip-link:focus {
+  left: 1rem; top: .5rem; z-index: 60;
+  background: var(--ink); color: var(--paper);
+  padding: .5rem .8rem; font-family: var(--mono); font-size: .8rem;
+}
+
+/* ----- Čárový kód (CSS) — opakující se signatura ----------------------- */
+
+.barcode {
+  height: 30px;
+  width: 100%;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--ink) 0 2px, transparent 2px 5px,
+    var(--ink) 5px 6px, transparent 6px 9px,
+    var(--ink) 9px 12px, transparent 12px 14px,
+    var(--ink) 14px 15px, transparent 15px 19px
+  );
+  opacity: .85;
+}
+
+/* ----- Hlavička webu --------------------------------------------------- */
 
 .site-header {
   position: sticky;
   top: 0;
-  z-index: 10;
-  background: color-mix(in srgb, var(--surface) 88%, transparent);
-  backdrop-filter: saturate(140%) blur(8px);
-  border-bottom: 1px solid var(--line);
+  z-index: 30;
+  background: color-mix(in srgb, var(--paper) 90%, transparent);
+  backdrop-filter: saturate(140%) blur(7px);
+  border-bottom: 2px solid var(--ink);
 }
-.site-header__inner { display: flex; align-items: center; min-height: 64px; }
-.brand { display: inline-flex; align-items: center; gap: .7rem; color: var(--ink); }
-.brand:hover { text-decoration: none; }
-.brand__mark { font-size: 1.7rem; line-height: 1; }
-.brand__text { display: flex; flex-direction: column; }
-.brand__title { font-weight: 800; letter-spacing: -.01em; font-size: 1.15rem; }
-.brand__tagline { font-size: .78rem; color: var(--muted); }
+.site-header__inner {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  min-height: 56px;
+  padding-block: .55rem;
+}
+.brand {
+  font-family: var(--display);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 1.55rem;
+  letter-spacing: .03em;
+  color: var(--ink);
+  text-decoration: none;
+  line-height: 1;
+}
+.site-header__tag {
+  font-family: var(--mono);
+  font-size: .66rem;
+  text-transform: uppercase;
+  letter-spacing: .18em;
+  color: var(--ink-2);
+}
+.site-header__rule { height: 7px; opacity: .4; }
 
-/* ----- Domovská stránka ---------------------------------------------- */
+@media (max-width: 460px) {
+  .site-header__tag { display: none; }
+}
 
-.hero { padding: clamp(2rem, 6vw, 4rem) 0 1.5rem; max-width: var(--readw); }
+/* ----- Domovská stránka: hero ----------------------------------------- */
+
+.hero { padding: clamp(2.4rem, 7vw, 5rem) 0 2rem; }
+.hero__eyebrow {
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  font-size: .72rem;
+  color: var(--ink-2);
+  margin: 0 0 1.1rem;
+}
 .hero__title {
-  font-size: clamp(1.9rem, 5vw, 2.9rem);
-  line-height: 1.1;
-  letter-spacing: -.02em;
-  margin: 0 0 .6rem;
+  font-family: var(--display);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: clamp(3.2rem, 12vw, 7.5rem);
+  line-height: .86;
+  letter-spacing: -.005em;
+  margin: 0 0 1.3rem;
+  color: var(--ink);
 }
-.hero__lead { font-size: 1.1rem; color: var(--ink-soft); margin: 0; }
+.hero__lede {
+  font-size: 1.18rem;
+  line-height: 1.5;
+  max-width: 40rem;
+  color: var(--ink);
+  margin: 0;
+}
+
+/* ----- Police s recenzemi --------------------------------------------- */
+
+.shelf-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: .5rem;
+  margin-bottom: 1.3rem;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  font-size: .74rem;
+}
+.shelf-head__count { color: var(--ink-2); }
 
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: clamp(1rem, 3vw, 1.6rem);
+  grid-template-columns: repeat(auto-fill, minmax(288px, 1fr));
+  gap: 1.1rem;
   padding-bottom: 4rem;
 }
 
+/* ----- Karta = etiketa zboží na polici -------------------------------- */
+
 .card {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: var(--shadow);
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-bottom-width: 5px;       /* hrana police */
   display: flex;
   flex-direction: column;
-  transition: transform .18s ease, box-shadow .18s ease;
+  transition: transform .15s ease;
 }
-.card:hover { transform: translateY(-3px); box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 26px 44px -24px rgba(0,0,0,.45); }
-.card__media { display: block; aspect-ratio: 16 / 10; background: var(--surface-2); }
+.card:hover { transform: translateY(-3px); }
+
+.card__media {
+  position: relative;
+  display: block;
+  aspect-ratio: 5 / 4;
+  overflow: hidden;
+  background: var(--shelf);
+  border-bottom: 2px solid var(--ink);
+}
 .card__media img { width: 100%; height: 100%; object-fit: cover; }
-.card__body { padding: 1.1rem 1.2rem 1.3rem; display: flex; flex-direction: column; gap: .55rem; flex: 1; }
-.card__top { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
-.card__date { font-size: .82rem; color: var(--muted); }
-.card__title { font-size: 1.25rem; line-height: 1.25; margin: 0; letter-spacing: -.01em; }
-.card__title a { color: var(--ink); }
-.card__summary { margin: 0; color: var(--ink-soft); font-size: .96rem; }
-
-/* ----- Hodnocení (badge) --------------------------------------------- */
-
-.rating {
-  display: inline-flex;
-  align-items: baseline;
-  gap: .1em;
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
-  padding: .2em .55em;
-  border-radius: 999px;
-  color: #fff;
-  background: var(--muted);
-  line-height: 1.2;
-  font-size: .92rem;
-}
-.rating__max { font-weight: 600; font-size: .72em; opacity: .85; }
-.rating--big { font-size: 1.5rem; padding: .28em .7em; border-radius: 14px; }
-.rating-great { background: var(--great); }
-.rating-good  { background: var(--good); }
-.rating-ok    { background: var(--ok); }
-.rating-bad   { background: var(--bad); }
-.rating-na    { background: var(--muted); }
-
-/* ----- Štítky -------------------------------------------------------- */
-
-.tags { list-style: none; display: flex; flex-wrap: wrap; gap: .4rem; padding: 0; margin: .2rem 0 0; }
-.tag {
-  font-size: .76rem;
-  color: var(--ink-soft);
-  background: var(--surface-2);
-  border: 1px solid var(--line);
-  padding: .18rem .55rem;
-  border-radius: 999px;
+.card__media .pricetag {
+  position: absolute;
+  top: .6rem; left: .6rem;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, .22);
 }
 
-/* ----- Příspěvek ----------------------------------------------------- */
-
-.post { padding: clamp(1.5rem, 4vw, 2.5rem) 0 4rem; }
-.back-link { font-size: .9rem; font-weight: 600; }
-.post-header { max-width: var(--readw); margin: 1.4rem 0 1.6rem; }
-.post-header .rating { margin-bottom: .8rem; }
-.post-title { font-size: clamp(2rem, 5.5vw, 3rem); line-height: 1.08; letter-spacing: -.025em; margin: 0 0 .6rem; }
-.post-summary { font-size: 1.18rem; color: var(--ink-soft); margin: 0 0 1.2rem; }
-
-.metabar {
+.card__body {
+  padding: .9rem 1rem 1.1rem;
   display: flex;
-  flex-wrap: wrap;
-  gap: .4rem .5rem;
+  flex-direction: column;
+  gap: .65rem;
+  flex: 1;
+}
+.card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+}
+.card__date {
+  font-family: var(--mono);
+  font-size: .7rem;
+  letter-spacing: .04em;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.card__title {
+  font-family: var(--display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 1.45rem;
+  line-height: 1.02;
+  letter-spacing: .005em;
   margin: 0;
 }
-.metabar__item {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  padding: .4rem .7rem;
-  line-height: 1.2;
+.card__title a {
+  color: var(--ink);
+  text-decoration: none;
 }
-.metabar__item dt { font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0; }
-.metabar__item dd { margin: .1rem 0 0; font-weight: 700; font-size: .92rem; }
+.card__title a:hover { text-decoration: underline; text-decoration-thickness: 2px; }
+.card__summary {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: .92rem;
+  line-height: 1.45;
+}
+.card__data { margin-top: auto; padding-top: .2rem; }
 
-.post-hero { margin: 0 0 2rem; }
-.post-hero img { width: 100%; border-radius: var(--radius); border: 1px solid var(--line); box-shadow: var(--shadow); }
+/* ----- Hodnocení = odstupňovaný štítek (signatura) -------------------- */
 
-/* ----- Tělo článku --------------------------------------------------- */
+.stamp {
+  display: inline-flex;
+  align-items: stretch;
+  border: 2px solid var(--ink);
+  background: var(--card);
+  line-height: 1;
+  flex: none;
+}
+.stamp__num {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: #fff;
+  padding: .26em .46em;
+  display: flex;
+  align-items: center;
+  letter-spacing: .01em;
+}
+.stamp__meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: .22em;
+  padding: .2rem .5rem;
+}
+.stamp__max {
+  font-family: var(--mono);
+  font-size: .6rem;
+  letter-spacing: .08em;
+  color: var(--ink-2);
+}
+.stamp__grade {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: .66rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.score-hi  .stamp__num { background: var(--score-hi); color: #fff; }
+.score-mid .stamp__num { background: var(--score-mid); color: #171307; } /* tmavý text kvůli kontrastu na oranžové */
+.score-lo  .stamp__num { background: var(--score-lo); color: #fff; }
+.score-na  .stamp__num { background: var(--ink-2); color: #fff; }
 
-.post-body { max-width: var(--readw); }
-.post-body > * { margin-inline: auto; }
+.stamp--big .stamp__num { font-size: 3.4rem; padding: .14em .34em; }
+.stamp--big .stamp__max { font-size: .82rem; }
+.stamp--big .stamp__grade { font-size: 1rem; }
+
+/* ----- Cenovka --------------------------------------------------------- */
+
+.pricetag {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  background: var(--tag);
+  color: var(--tag-ink);
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: .01em;
+  padding: .3em .7em .3em 1em;
+  clip-path: polygon(12px 0, 100% 0, 100% 100%, 12px 100%, 0 50%);
+}
+.pricetag::before {
+  content: "";
+  position: absolute;
+  left: 6px; top: 50%;
+  transform: translateY(-50%);
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--paper);
+}
+
+/* ----- Datový proužek (obalový kód) ----------------------------------- */
+
+.datastrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .25rem .9rem;
+  font-family: var(--mono);
+  font-size: .72rem;
+}
+.data__item { display: inline-flex; gap: .4rem; align-items: baseline; }
+.data__k { color: var(--ink-2); letter-spacing: .06em; }
+.data__v { color: var(--ink); font-weight: 500; }
+
+/* ----- Štítky ---------------------------------------------------------- */
+
+.tags {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: 0;
+  margin: .1rem 0 0;
+}
+.tag {
+  font-family: var(--mono);
+  font-size: .64rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--ink-2);
+  border: 1px solid var(--line);
+  padding: .12rem .42rem;
+}
+
+/* ----- Příspěvek ------------------------------------------------------- */
+
+.post { padding: 1.4rem 0 4rem; }
+
+.back-link {
+  font-family: var(--mono);
+  font-size: .74rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink-2);
+  text-decoration: none;
+}
+.back-link:hover { color: var(--ink); }
+
+.post-head { max-width: var(--measure); margin: 1.2rem auto 1.8rem; }
+.eyebrow {
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  font-size: .72rem;
+  color: var(--ink-2);
+  margin: 0 0 .8rem;
+}
+.post-title {
+  font-family: var(--display);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: clamp(2.4rem, 7vw, 4rem);
+  line-height: .92;
+  margin: 0 0 1rem;
+}
+.post-lede {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  color: var(--ink);
+  margin: 0 0 1.4rem;
+}
+.verdict {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  flex-wrap: wrap;
+  margin: 0 0 1.3rem;
+}
+.verdict .pricetag {
+  font-size: 1.3rem;
+  padding: .36em .85em .36em 1.15em;
+}
+.post-data {
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  gap: .5rem 1.4rem;
+}
+
+/* ----- Hero foto v plastové vaničce ------------------------------------ */
+
+.tray {
+  position: relative;
+  max-width: var(--measure);
+  margin: 0 auto 2.4rem;
+  background: var(--tray);
+  border: 2px solid var(--ink);
+  padding: 14px 14px 30px;
+}
+.tray__img {
+  display: block;
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, .28);
+}
+.tray__seal {
+  position: absolute;
+  right: -7px; top: 22px;
+  background: var(--tag);
+  color: var(--tag-ink);
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: .64rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  padding: .35rem .6rem;
+  transform: rotate(2.5deg);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, .22);
+}
+
+/* ----- Tělo článku ----------------------------------------------------- */
+
+.post-body { max-width: var(--measure); margin-inline: auto; }
 
 .post-body h2 {
-  font-size: 1.6rem;
-  letter-spacing: -.015em;
-  margin: 2.4rem 0 .8rem;
-  padding-top: 1.4rem;
-  border-top: 1px solid var(--line);
+  font-family: var(--display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 1.75rem;
+  line-height: 1.04;
+  letter-spacing: .01em;
+  margin: 2.6rem 0 1rem;
+  padding-top: 1rem;
+  border-top: 3px solid var(--ink);
 }
-.post-body h2:first-child { border-top: 0; padding-top: 0; margin-top: 0; }
-.post-body h3 { font-size: 1.2rem; margin: 1.8rem 0 .6rem; }
+.post-body h2:first-child { margin-top: .4rem; }
+.post-body h3 {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 1.12rem;
+  margin: 1.7rem 0 .5rem;
+}
 .post-body p { margin: 0 0 1.1rem; }
+.post-body a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--tag);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
 .post-body ul, .post-body ol { margin: 0 0 1.2rem; padding-left: 1.3rem; }
 .post-body li { margin: .3rem 0; }
-.post-body li::marker { color: var(--accent); }
+.post-body li::marker { color: var(--ink-2); }
 
 .post-body blockquote {
   margin: 0 0 1.4rem;
-  padding: .9rem 1.2rem;
-  border-left: 4px solid var(--accent);
-  background: var(--accent-soft);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  color: var(--ink);
+  padding: .85rem 1.1rem;
+  background: var(--shelf);
+  border-left: 3px solid var(--tag);
 }
 .post-body blockquote p:last-child { margin-bottom: 0; }
 
 .post-body code {
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-  font-size: .88em;
-  background: var(--surface-2);
+  font-family: var(--mono);
+  font-size: .85em;
+  background: var(--shelf);
   border: 1px solid var(--line);
-  padding: .1em .4em;
-  border-radius: 6px;
+  padding: .05em .35em;
 }
 
-.post-body img { border-radius: var(--radius); border: 1px solid var(--line); box-shadow: var(--shadow); margin-block: 1.4rem; }
-.post-body p > em:only-child { display: block; text-align: center; color: var(--muted); font-size: .9rem; margin-top: -.6rem; }
+/* obrázek v textu (např. detail) — pevný rámeček obalu */
+.post-body img {
+  width: 100%;
+  border: 2px solid var(--ink);
+  margin: 1.4rem 0 .5rem;
+}
+/* popisek / dek sekce (samostatná kurzíva v odstavci na nejvyšší úrovni —
+   ne uvnitř blockquote) */
+.post-body > p > em:only-child {
+  display: block;
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: .76rem;
+  line-height: 1.45;
+  letter-spacing: .02em;
+  color: var(--ink-2);
+}
 
-.post-body hr { border: 0; border-top: 1px solid var(--line); margin: 2.4rem auto; }
+.post-body hr { border: 0; border-top: 2px solid var(--line); margin: 2.2rem 0; }
 
-/* ----- Tabulky ------------------------------------------------------- */
+/* ----- Tabulky = výživová deklarace ------------------------------------ */
 
 .post-body table {
   width: 100%;
   border-collapse: collapse;
-  margin: 0 auto 1.6rem;
-  font-size: .95rem;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
+  border: 2px solid var(--ink);
+  margin: 0 0 1.6rem;
+  background: var(--card);
+  font-family: var(--mono);
+  font-size: .86rem;
 }
-.post-body thead th { background: var(--surface-2); text-align: left; }
-.post-body th, .post-body td { padding: .6rem .85rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+.post-body thead th {
+  background: var(--ink);
+  color: var(--paper);
+  text-align: left;
+  font-weight: 600;
+  font-size: .7rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.post-body th, .post-body td {
+  padding: .5rem .7rem;
+  border-bottom: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  vertical-align: top;
+}
+.post-body th:last-child, .post-body td:last-child { border-right: 0; }
 .post-body tbody tr:last-child td { border-bottom: 0; }
-.post-body tbody tr:nth-child(even) { background: var(--surface-2); }
+.post-body tbody td:first-child { font-family: var(--sans); font-weight: 600; }
 
-/* ----- Callout bloky (::: pro / ::: con) ----------------------------- */
+/* ----- Callout = panel hodnocení (Plusy / Mínusy) ---------------------- */
 
 .callout {
-  margin: 0 auto 1.4rem;
-  border: 1px solid var(--line);
-  border-left-width: 4px;
-  border-radius: var(--radius-sm);
-  padding: 1rem 1.2rem .4rem;
-  background: var(--surface);
+  margin: 0 0 1.4rem;
+  border: 2px solid var(--ink);
+  background: var(--card);
+  padding: 1rem 1.1rem .35rem;
 }
 .callout-title {
   display: flex;
   align-items: center;
   gap: .5rem;
-  font-weight: 800;
-  margin: 0 0 .4rem;
-  letter-spacing: -.01em;
+  margin: 0 0 .6rem;
+  padding-bottom: .55rem;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: .74rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
 }
-.callout-icon { font-size: 1.1rem; }
-.callout-body ul { margin: 0 0 .8rem; }
-.callout-body p:last-child { margin-bottom: .8rem; }
+.callout-icon { font-size: 1rem; }
+.callout-body ul { list-style: none; margin: 0 0 .7rem; padding-left: 0; }
+.callout-body li { position: relative; padding-left: 1.4rem; margin: .35rem 0; }
+.callout-body li::before {
+  position: absolute;
+  left: 0; top: 0;
+  font-family: var(--display);
+  font-weight: 800;
+}
+.callout-body p:last-child { margin-bottom: .7rem; }
 
-.callout-pro { border-left-color: var(--pro); background: var(--pro-bg); }
-.callout-pro .callout-title { color: var(--pro); }
-.callout-pro li::marker { content: "✓  "; color: var(--pro); font-weight: 700; }
+.callout-pro { border-color: var(--score-hi); }
+.callout-pro .callout-title { color: var(--score-hi); border-color: color-mix(in srgb, var(--score-hi) 30%, transparent); }
+.callout-pro .callout-body li::before { content: "+"; color: var(--score-hi); }
 
-.callout-con { border-left-color: var(--con); background: var(--con-bg); }
-.callout-con .callout-title { color: var(--con); }
-.callout-con li::marker { content: "✕  "; color: var(--con); font-weight: 700; }
+.callout-con { border-color: var(--score-lo); }
+.callout-con .callout-title { color: var(--score-lo); border-color: color-mix(in srgb, var(--score-lo) 30%, transparent); }
+.callout-con .callout-body li::before { content: "–"; color: var(--score-lo); }
 
-.callout-pro ul, .callout-con ul { list-style: none; padding-left: 1.4rem; }
+/* ----- Patička příspěvku & webu ---------------------------------------- */
 
-/* ----- Patička příspěvku & webu -------------------------------------- */
+.post-foot {
+  max-width: var(--measure);
+  margin: 2.6rem auto 0;
+  padding-top: 1.4rem;
+  border-top: 2px solid var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.post-foot .barcode { height: 28px; max-width: 220px; }
 
-.post-footer { max-width: var(--readw); margin: 2.5rem auto 0; padding-top: 1.4rem; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 1rem; }
+.site-footer {
+  border-top: 2px solid var(--ink);
+  background: var(--card);
+  margin-top: 3rem;
+}
+.site-footer__inner {
+  padding-block: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: .8rem;
+}
+.site-footer .barcode { height: 32px; max-width: 240px; }
+.site-footer__line {
+  font-family: var(--display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  font-size: 1.15rem;
+  margin: 0;
+}
+.site-footer__meta {
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: var(--ink-2);
+  margin: 0;
+}
+.site-footer code { font-family: var(--mono); }
 
-.site-footer { border-top: 1px solid var(--line); background: var(--surface); margin-top: 2rem; }
-.site-footer .container { padding-block: 2rem; }
-.site-footer p { margin: .2rem 0; font-size: .9rem; }
+.empty {
+  font-family: var(--mono);
+  color: var(--ink-2);
+  padding: 3rem 0;
+}
 
-.empty { color: var(--muted); padding: 3rem 0; }
+/* ----- Drobnosti / responzivita --------------------------------------- */
+
+@media (max-width: 560px) {
+  body { font-size: 16px; }
+  .card-grid { grid-template-columns: 1fr; }
+  .stamp--big .stamp__num { font-size: 2.6rem; }
+  .hero__title { line-height: .9; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
