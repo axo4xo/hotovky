@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Hotovky — statický generátor blogu s recenzemi hotových jídel.
+Hotovky - statický generátor blogu s recenzemi hotových jídel.
 
 Načte markdownové recenze z ./src, vyřeší šablonové proměnné typu
 ``{{ page.x }}`` z YAML frontmatteru, vykreslí markdown (včetně vlastních
@@ -27,7 +27,7 @@ import yaml
 
 # --------------------------------------------------------------------------- #
 # Konfigurace
-# --------------------------------------------------------------------------- #
+# --------------------------------------------------------------------------- # 
 
 ROOT = Path(__file__).resolve().parent
 SRC_DIR = ROOT / "src"
@@ -37,11 +37,11 @@ OUT_DIR = ROOT / "dist"
 SITE_TITLE = "Hotovky"
 SITE_KICKER = "Posudky hotových jídel"
 SITE_TAGLINE = "Recenze hotových jídel a rychlých obědů"
-SITE_DESCRIPTION = "Hotová jídla z českých regálů — oloupnutá, ochutnaná a obodovaná na stupnici do deseti."
+SITE_DESCRIPTION = "Hotová jídla z českých regálů - oloupnutá, ochutnaná a obodovaná na stupnici do deseti."
 
 # Texty domovské stránky
 HERO_TITLE_HTML = "Hotovky"
-HERO_LEDE = ("Hotová jídla z českých regálů — oloupnutá, ochutnaná a obodovaná "
+HERO_LEDE = ("Hotová jídla z českých regálů - oloupnutá, ochutnaná a obodovaná "
              "na stupnici do deseti. Žádné filtry, jen vanička a verdikt.")
 
 MONTHS_CS = [
@@ -152,7 +152,7 @@ def score_word(rating) -> str:
     try:
         r = float(rating)
     except (TypeError, ValueError):
-        return "—"
+        return "-"
     if r >= 8:
         return "Výborné"
     if r >= 6.5:
@@ -268,7 +268,6 @@ def page_shell(title: str, body: str, *, description: str = "", is_home: bool = 
     <a class="brand" href="index.html">{html.escape(SITE_TITLE)}</a>
     <span class="site-header__tag">{html.escape(SITE_KICKER)}</span>
   </div>
-  <div class="barcode site-header__rule" aria-hidden="true"></div>
 </header>
 <main class="container" id="obsah">
 {body}
@@ -276,7 +275,7 @@ def page_shell(title: str, body: str, *, description: str = "", is_home: bool = 
 <footer class="site-footer">
   <div class="container site-footer__inner">
     <div class="barcode" aria-hidden="true"></div>
-    <p class="site-footer__line">{html.escape(SITE_TITLE)} — Spotřebujte dle uvážení</p>
+    <p class="site-footer__line">{html.escape(SITE_TITLE)} - Spotřebujte dle uvážení</p>
     <p class="site-footer__meta">Sestaveno staticky pomocí <code>build.py</code>.</p>
   </div>
 </footer>
@@ -298,7 +297,7 @@ def rating_stamp(rating, *, big: bool = False) -> str:
     word = score_word(rating)
     return (
         f'<span class="stamp {cls}{size}" role="img" '
-        f'aria-label="Hodnocení {val} z 10 — {word}">'
+        f'aria-label="Hodnocení {val} z 10 - {word}">'
         f'<span class="stamp__num">{val}</span>'
         f'<span class="stamp__meta">'
         f'<span class="stamp__max">/ 10</span>'
@@ -439,7 +438,7 @@ def render_post(post: dict, md: markdown.Markdown) -> str:
 </article>
 """
     return page_shell(
-        f'{title or post["slug"]} — {SITE_TITLE}',
+        f'{title or post["slug"]} - {SITE_TITLE}',
         article,
         description=str(summary or SITE_DESCRIPTION),
     )
@@ -493,7 +492,7 @@ def render_index(posts: list[dict]) -> str:
 </div>
 <div class="card-grid">{cards}</div>"""
     else:
-        grid = '<p class="empty">Regál je zatím prázdný — nic jsme neoloupli.</p>'
+        grid = '<p class="empty">Regál je zatím prázdný - nic jsme neoloupli.</p>'
     body = f"""
 <section class="hero">
   <h1 class="hero__title">{HERO_TITLE_HTML}</h1>
@@ -501,7 +500,7 @@ def render_index(posts: list[dict]) -> str:
 </section>
 {grid}
 """
-    return page_shell(f"{SITE_TITLE} — {SITE_KICKER}", body, is_home=True)
+    return page_shell(f"{SITE_TITLE} - {SITE_KICKER}", body, is_home=True)
 
 
 # --------------------------------------------------------------------------- #
