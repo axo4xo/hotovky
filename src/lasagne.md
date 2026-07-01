@@ -4,7 +4,7 @@ date: 2026-07-01
 rating: 8.3
 shop: Albert
 brand: Albert
-price: 60 Kč (?)
+price: 59,90 Kč
 price_czk: 60
 price_per_100g: ≈ 15 Kč
 weight: 400 g

@@ -1,19 +1,19 @@
 ---
 title: "Recenze: MOWI Sushi"
 date: 2026-06-30
-rating: 5.5
-shop: "Albert?"
-brand: "MOWI"
-price: "179 Kč (?)"
-price_czk: 179
-price_per_100g: "≈ 49 Kč"
-weight: "367,5 g"
+rating: 5
+shop: Albert
+brand: MOWI
+price: 189 Kč
+price_czk: 189
+price_per_100g: ≈ 51,5 Kč
+weight: 367,5 g
 weight_g: 367.5
 kcal_100g: 162
 cuisine: Asijská / Japonská
 type: Chlazená
 image: /assets/img/sushi-hlavni.jpg
-summary: "Lehce nadprůměrné chlazené sushi v rádoby prémiovém kabátě. Před hladem zachrání."
+summary: Lehce nadprůměrné chlazené sushi v rádoby prémiovém kabátě. Před hladem zachrání.
 tags:
   - hotovky
   - recenze
@@ -94,6 +94,7 @@ Prakticky není. Z balení je cítit odér mořských řas, které lehce připom
 - Málo sojovky
 - Sojovka hozená mezi sushi zaručí, že bude mastná a člověk se umastí až ji bude vyndávat
 - Sushi plněné wakame mořskými řasami
+- Na 190 Kč dost drahý.
 :::
 
 ## 🏆 Závěrečný verdikt
