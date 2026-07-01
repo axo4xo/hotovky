@@ -1,6 +1,6 @@
 ---
 title: "Recenze: Lasagne Bolognese"
-date: 2026-06-30
+date: 2026-07-01
 rating: 8.3
 shop: Albert
 brand: Albert
@@ -23,17 +23,17 @@ tags:
 draft: false
 ---
 
-> **Očekávání:** Obal vypadá dobře.
+> **Očekávání:** Obal vypadá dobře. Očekávám za nejlepší hotovku.
 
 ## 📊 Přehled a specifikace
 
-| Položka        | Hodnota                                       |
-| :------------- | :-------------------------------------------- |
-| **Obchod**     | {{ page.shop }}                               |
-| **Značka**     | {{ page.brand }}                              |
+| Položka        | Hodnota                                                         |
+| :------------- | :-------------------------------------------------------------- |
+| **Obchod**     | {{ page.shop }}                                                 |
+| **Značka**     | {{ page.brand }}                                                |
 | **Cena**       | {{ page.price }} (přepočet na 100 g: {{ page.price_per_100g }}) |
-| **Hmotnost**   | {{ page.weight }}                             |
-| **Typ balení** | Plastová vanička                              |
+| **Hmotnost**   | {{ page.weight }}                                               |
+| **Typ balení** | Hliníková vanička (málem jsem ji dal do mikrovlnky)             |
 
 ## 📦 Balení a první dojem
 
