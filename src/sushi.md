@@ -23,7 +23,7 @@ tags:
 draft: false
 ---
 
-> **Očekávání:** Obal vypadá profesionálně — lepší chuť, kvalitnější než klasické sushi z mrazáku.
+> **Očekávání:** Obal vypadá profesionálně - lepší chuť, kvalitnější než klasické sushi z mrazáku.
 
 ## 📊 Přehled a specifikace
 
