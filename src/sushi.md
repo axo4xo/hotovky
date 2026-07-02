@@ -73,8 +73,8 @@ Prakticky není. Z balení je cítit odér mořských řas, které lehce připom
 
 ### 3. Chuť
 
-- **Hlavní složka (maso / tofu / zelenina):** Rýže
-- **Příloha (rýže / knedlík / těstoviny):** Sojovka
+- **Hlavní složka (maso / tofu / zelenina):** Rýže, ryba - všechno ok
+- **Příloha (rýže / knedlík / těstoviny):** ???
 - **Omáčka / šťáva:** Sojovka ok
 
 ![Detail jídla po ohřátí](/assets/img/sushi-detail.jpg)
