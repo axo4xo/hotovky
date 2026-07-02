@@ -38,6 +38,7 @@ SITE_TITLE = "Hotovky"
 SITE_KICKER = "Posudky hotových jídel"
 SITE_TAGLINE = "Recenze hotových jídel a rychlých obědů"
 SITE_DESCRIPTION = "Hotová jídla z českých regálů - oloupnutá, ochutnaná a obodovaná na stupnici do deseti."
+SITE_REPO = "https://github.com/axo4xo/hotovky"
 
 # Texty domovské stránky
 HERO_TITLE_HTML = "Hotovky"
@@ -276,7 +277,7 @@ def page_shell(title: str, body: str, *, description: str = "", is_home: bool = 
   <div class="container site-footer__inner">
     <div class="barcode" aria-hidden="true"></div>
     <p class="site-footer__line">{html.escape(SITE_TITLE)} - Spotřebujte dle uvážení</p>
-    <p class="site-footer__meta">Sestaveno staticky pomocí <code>build.py</code>.</p>
+    <p class="site-footer__meta"><a class="site-footer__repo" href="{html.escape(SITE_REPO)}" rel="noopener">Zdrojový kód na GitHubu →</a></p>
   </div>
 </footer>
 </body>
@@ -449,6 +450,9 @@ def render_card(post: dict) -> str:
     image = webpath(meta.get("image", ""))
     href = f'{post["slug"]}.html'
     title = str(meta.get("title", ""))
+    rating_num = _num(meta.get("rating"))
+    data_rating = "" if rating_num is None else f"{rating_num:g}"
+    data_date = fmt_date_iso(meta.get("date"))
     media = (
         f'<div class="card__media">'
         f'<img src="{html.escape(image)}" alt="" loading="lazy">'
@@ -465,7 +469,7 @@ def render_card(post: dict) -> str:
         extra_class="card__data",
     )
     return f"""
-<article class="card">
+<article class="card" data-date="{html.escape(data_date)}" data-rating="{html.escape(data_rating)}">
   {media}
   <div class="card__body">
     <div class="card__row">
@@ -481,6 +485,65 @@ def render_card(post: dict) -> str:
 """
 
 
+# Volby řazení regálu: (hodnota, popisek, klíč dat, směr)
+SORT_OPTIONS = [
+    ("date-desc", "Nejnovější", "date", "desc"),
+    ("date-asc", "Nejstarší", "date", "asc"),
+    ("rating-desc", "Nejlepší hodnocení", "rating", "desc"),
+    ("rating-asc", "Nejhorší hodnocení", "rating", "asc"),
+]
+
+
+def sorter_html() -> str:
+    """Ovládací prvek řazení (řadí se na klientovi v JS)."""
+    opts = "".join(
+        f'<option value="{val}" data-key="{key}" data-dir="{dr}">{html.escape(label)}</option>'
+        for val, label, key, dr in SORT_OPTIONS
+    )
+    return (
+        '<label class="sorter">'
+        '<span class="sorter__label">Řadit</span>'
+        '<span class="sorter__field">'
+        f'<select class="sorter__select" id="sort-select" aria-label="Řadit recenze">{opts}</select>'
+        "</span></label>"
+    )
+
+
+SORT_SCRIPT = """
+<script>
+(function () {
+  var grid = document.getElementById('card-grid');
+  var select = document.getElementById('sort-select');
+  if (!grid || !select) return;
+  var cards = Array.prototype.slice.call(grid.querySelectorAll('.card'));
+
+  function sortCards() {
+    var opt = select.options[select.selectedIndex];
+    var key = opt.getAttribute('data-key');
+    var dir = opt.getAttribute('data-dir') === 'asc' ? 1 : -1;
+    cards.slice().sort(function (a, b) {
+      if (key === 'rating') {
+        var ar = parseFloat(a.getAttribute('data-rating'));
+        var br = parseFloat(b.getAttribute('data-rating'));
+        var an = isNaN(ar), bn = isNaN(br);
+        if (an || bn) return an === bn ? 0 : (an ? 1 : -1); // bez hodnocení dolů
+        return (ar - br) * dir;
+      }
+      var ad = a.getAttribute('data-date') || '';
+      var bd = b.getAttribute('data-date') || '';
+      if (ad === bd) return 0;
+      if (!ad) return 1; // bez data dolů
+      if (!bd) return -1;
+      return ad < bd ? -dir : dir;
+    }).forEach(function (card) { grid.appendChild(card); });
+  }
+
+  select.addEventListener('change', sortCards);
+})();
+</script>
+"""
+
+
 def render_index(posts: list[dict]) -> str:
     n = len(posts)
     if posts:
@@ -488,9 +551,13 @@ def render_index(posts: list[dict]) -> str:
         grid = f"""
 <div class="shelf-head">
   <span class="shelf-head__label">Regál</span>
-  <span class="shelf-head__count">{n} {plural_polozka(n)}</span>
+  <div class="shelf-head__tools">
+    <span class="shelf-head__count">{n} {plural_polozka(n)}</span>
+    {sorter_html()}
+  </div>
 </div>
-<div class="card-grid">{cards}</div>"""
+<div class="card-grid" id="card-grid">{cards}</div>
+{SORT_SCRIPT}"""
     else:
         grid = '<p class="empty">Regál je zatím prázdný - nic jsme neoloupli.</p>'
     body = f"""

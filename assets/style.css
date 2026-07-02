@@ -164,6 +164,8 @@ a { color: var(--ink); }
   display: flex;
   align-items: baseline;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .5rem 1.2rem;
   border-bottom: 2px solid var(--ink);
   padding-bottom: .5rem;
   margin-bottom: 1.3rem;
@@ -172,7 +174,54 @@ a { color: var(--ink); }
   letter-spacing: .12em;
   font-size: .74rem;
 }
+.shelf-head__tools {
+  display: flex;
+  align-items: baseline;
+  gap: 1.2rem;
+}
 .shelf-head__count { color: var(--ink-2); }
+
+/* ----- Řazení regálu -------------------------------------------------- */
+
+.sorter {
+  display: inline-flex;
+  align-items: baseline;
+  gap: .5rem;
+}
+.sorter__label { color: var(--ink-2); }
+.sorter__field { position: relative; display: inline-flex; }
+.sorter__field::after {           /* šipka, dědí barvu = funguje i v tmavém režimu */
+  content: "";
+  position: absolute;
+  right: .6rem;
+  top: 45%;
+  width: .4rem;
+  height: .4rem;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-50%) rotate(45deg);
+  pointer-events: none;
+}
+.sorter__select {
+  appearance: none;
+  -webkit-appearance: none;
+  font-family: var(--mono);
+  font-size: inherit;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink);
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  padding: .3rem 1.9rem .3rem .55rem;
+  margin: 0;
+  cursor: pointer;
+  line-height: 1;
+}
+.sorter__select:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
 
 .card-grid {
   display: grid;
@@ -648,6 +697,14 @@ a { color: var(--ink); }
   margin: 0;
 }
 .site-footer code { font-family: var(--mono); }
+.site-footer__repo {
+  color: var(--ink-2);
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 1px;
+  transition: color .15s ease;
+}
+.site-footer__repo:hover { color: var(--ink); }
 
 .empty {
   font-family: var(--mono);
