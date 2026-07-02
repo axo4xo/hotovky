@@ -489,8 +489,8 @@ def render_card(post: dict) -> str:
 SORT_OPTIONS = [
     ("date-desc", "Nejnovější", "date", "desc"),
     ("date-asc", "Nejstarší", "date", "asc"),
-    ("rating-desc", "Nejlepší hodnocení", "rating", "desc"),
-    ("rating-asc", "Nejhorší hodnocení", "rating", "asc"),
+    ("rating-desc", "Od nejlepšího", "rating", "desc"),
+    ("rating-asc", "Od nejhoršího", "rating", "asc"),
 ]
 
 
